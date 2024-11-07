@@ -1,5 +1,5 @@
 # Étape 1 : Construction de l'application Angular
-FROM node:18 AS build  # Utilisation de Node.js version 18 LTS, compatible avec Angular
+FROM node:18 AS build
 
 # Définir le répertoire de travail
 WORKDIR /app
@@ -7,10 +7,8 @@ WORKDIR /app
 # Copier les fichiers package.json et package-lock.json pour installer les dépendances
 COPY package*.json ./
 
-# Mettre à jour npm à une version compatible
+# Mettre à jour npm et installer les dépendances avec un délai d'attente plus long
 RUN npm install -g npm@10.9.0
-
-# Installer les dépendances avec un délai d'attente plus long
 RUN npm install --legacy-peer-deps --fetch-timeout=60000 --network-timeout=60000
 
 # Copier tous les fichiers sources de l'application
@@ -19,13 +17,13 @@ COPY . .
 # Construire l'application Angular pour la production
 RUN npm run build --prod
 
-# Étape 2 : Serveur Nginx pour l'application construite
+# Étape 2 : Créer l'image finale
 FROM nginx:alpine
 
-# Copier les fichiers construits depuis l'étape précédente vers le dossier par défaut de Nginx
-COPY --from=build /app/dist/nom-du-projet-angular /usr/share/nginx/html
+# Copier les fichiers générés par la construction de l'application Angular
+COPY --from=build /app/dist/ /usr/share/nginx/html
 
-# Exposer le port 80 pour accéder à l'application
+# Exposer le port 80 pour Nginx
 EXPOSE 80
 
 # Démarrer Nginx
