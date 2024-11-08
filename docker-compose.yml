@@ -47,44 +47,7 @@ services:
     ports:
       - "4200:80"  # Mappe le port 4200 de l'hôte au port 80 du conteneur Nginx pour Angular
 
-  # Service pour Nexus
-  nexus:
-    image: sonatype/nexus3
-    container_name: nexus
-    restart: unless-stopped
-    ports:
-      - "8081:8081"
-    volumes:
-      - nexus_data:/nexus-data
-    environment:
-      NEXUS_CONTEXT: /
-
-  # Service pour SonarQube
-  sonarqube:
-    image: sonarqube:latest
-    container_name: sonarqube
-    restart: unless-stopped
-    ports:
-      - "9000:9000"
-    environment:
-      - SONARQUBE_JDBC_USERNAME=sonar
-      - SONARQUBE_JDBC_PASSWORD=sonar
-
-  # Service pour Jenkins
-  jenkins:
-    image: jenkins/jenkins:lts
-    container_name: jenkins
-    restart: unless-stopped
-    ports:
-      - "8084:8080"      # Port pour l'interface Jenkins
-      - "50000:50000"    # Port pour les agents Jenkins
-    volumes:
-      - jenkins_data:/var/jenkins_home
-    environment:
-      JENKINS_OPTS: --prefix=/jenkins
-      JAVA_OPTS: "-Djenkins.install.runSetupWizard=false"  # Désactive l'assistant d'installation initial si vous avez un fichier de config JCasC
 
 volumes:
   mysql_data:
-  nexus_data:
-  jenkins_data:
+
